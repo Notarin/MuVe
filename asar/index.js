@@ -5,13 +5,15 @@ const { execFileSync } = require("child_process");
 const vencordDir = path.join(process.env.HOME, ".local", "share", "vvv", "Vencord");
 const baseUrl = "https://github.com/Vendicated/Vencord/releases/download/devbuild/";
 
-if (!fs.existsSync(vencordDir)) {
-    fs.mkdirSync(vencordDir, { recursive: true });
+const files = ["preload.js", "patcher.js", "renderer.js", "renderer.css"];
 
-    execFileSync("curl", ["-L", "-o", path.join(vencordDir, "preload.js"), baseUrl + "preload.js"]);
-    execFileSync("curl", ["-L", "-o", path.join(vencordDir, "patcher.js"), baseUrl + "patcher.js"]);
-    execFileSync("curl", ["-L", "-o", path.join(vencordDir, "renderer.js"), baseUrl + "renderer.js"]);
-    execFileSync("curl", ["-L", "-o", path.join(vencordDir, "renderer.css"), baseUrl + "renderer.css"]);
+fs.mkdirSync(vencordDir, { recursive: true });
+
+for (const file of files) {
+    const filePath = path.join(vencordDir, file);
+    if (!fs.existsSync(filePath)) {
+        execFileSync("curl", ["-L", "-o", filePath, baseUrl + file]);
+    }
 }
 
 require(path.join(vencordDir, "patcher.js"));
