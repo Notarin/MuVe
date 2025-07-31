@@ -20,46 +20,20 @@
           inherit system;
           config.allowUnfree = true;
         };
-        lib = pkgs.lib;
         treefmt-config = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
       in {
         formatter.${system} = treefmt-config.config.build.wrapper;
         checks.${system} = {
           formatting = treefmt-config.config.build.check self;
         };
-        packages.${system} = rec {
-          discord_patched = pkgs.discord.overrideAttrs {
+        packages.${system} = {
+          default = pkgs.discord.overrideAttrs {
             postInstall = ''
               mv $out/opt/Discord/resources/app.asar $out/opt/Discord/resources/_app.asar
               mkdir -p $out/opt/Discord/resources/app.asar
               cp -r ${./asar}/* $out/opt/Discord/resources/app.asar
             '';
           };
-          wrapper = pkgs.stdenv.mkDerivation (let
-            script_raw = builtins.readFile ./resources/wrapper.nu;
-            script_patched =
-              builtins.replaceStrings
-              [
-                "~Nu_bin~"
-                "~Discord_bin~"
-              ]
-              [
-                (lib.getExe pkgs.nushell)
-                (lib.getExe discord_patched)
-              ]
-              script_raw;
-          in {
-            pname = "vencord-wrapper";
-            version = discord_patched.version;
-            src = ./.;
-            output_bin = script_patched;
-            installPhase = ''
-              mkdir -p "$out/bin"
-              printf "$output_bin" > "$out/bin/$pname"
-              chmod +x "$out/bin/$pname"
-            '';
-          });
-          default = wrapper;
         };
         devShells.${system}.default = pkgs.mkShell {
           shellHook = ''
