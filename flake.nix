@@ -35,8 +35,8 @@
           formatting = treefmt-config.config.build.check self;
         };
         packages.${system} = rec {
-          default = vencord;
-          vencord = pkgs.discord.overrideAttrs {
+          default = MuVe;
+          MuVe = pkgs.discord.overrideAttrs {
             postInstall = ''
               # We move the original app.asar to _app.asar because that is where
               # Vencord expects it to be. The discord code still needs to be
