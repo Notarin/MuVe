@@ -7,7 +7,7 @@ const {
 // This variable is post-processed by the build script to replace the
 // `~curl~` with the absolute path to the curl binary.
 const curl = "~curl~";
-const vencordDir = path.join(process.env.HOME, ".local", "share", "vvv", "Vencord");
+const vencordDir = path.join(process.env.HOME, ".local", "share", "Vencord");
 const baseUrl = "https://github.com/Vendicated/Vencord/releases/download/devbuild/";
 
 const files = ["preload.js", "patcher.js", "renderer.js", "renderer.css"];
